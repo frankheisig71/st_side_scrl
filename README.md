@@ -14,5 +14,6 @@ Current status:
 - about 50% processor time free
 - some instabilities on overscan on the 1st two lines - reason unclear
 - some tiny flickering on right border on scrolling to left
+- only wake state 2 is supported currently
 
 Starting intention was to create a little side scrolling game... maybe it can be done.
