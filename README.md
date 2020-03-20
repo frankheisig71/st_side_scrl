@@ -1,5 +1,5 @@
 # st_side_scrl
-50Hz fullscreen full colour side scrolling on Atari ST
+50Hz fullscreen full colour side scrolling on Atari ST (use the arrow keys - left, right = single step - up, down = scroll)
 First of all: Many thanks to the DEAD HACKERS SOCIETY - I just take your code for this
 
 Playing around with the 4 bit technique I met some problems:
