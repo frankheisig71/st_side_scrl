@@ -1,6 +1,7 @@
 
   section	text
 
+  ifeq enable_tests
   ifne machine_t_1
 fn0_sh0_m1:
    move.l  #$000f000f,d0               ;  3 mask
@@ -86,6 +87,24 @@ fn1_sh2_c_m1:
    endr
    jsr fullscr_st_031_last_free.l       ;  1
    rts
+
+fn1_sh2_c2_m1:
+   jsr fullscr_st_fn1_init.l
+   jsr fullscr_st_031_del_bak.l         ; 51
+   jsr fullscr_st_031_cpy2_bdr.l        ; 37
+   rept 4
+   jsr fullscr_st_031_free_32.l         ;128
+   endr
+   rept 3
+   jsr fullscr_st_031_free.l            ;  3
+   endr
+   jsr fullscr_st_031_lower_free.l      ;  2
+   jsr fullscr_st_031_free_32.l         ; 32
+   rept 2
+   jsr fullscr_st_031_free.l            ; 34
+   endr
+   jsr fullscr_st_031_last_free.l       ;  1
+   rts                                  ;256
 
 fn1_sh2_b_m1:
    jsr fullscr_st_fn1_init.l
@@ -237,24 +256,6 @@ fn2_sh6_b_m1:
    jsr fullscr_st_223_unmask.l          ; 32
    rts                                  ;256
 
-fn2_sh6_f_m1:
-   move.l    #$00ff00ff,d0              ;  3 fullscr sh6 mask
-   jsr fullscr_st_fn2_init.l
-   jsr fullscr_st_223_msk.l             ; 32
-   rept 5
-   jsr fullscr_st_223_free_32.l         ;160
-   endr
-   rept 27
-   jsr fullscr_st_223_free.l            ; 27
-   endr
-   jsr fullscr_st_223_lower_free.l      ;  2
-   rept 2
-   jsr fullscr_st_223_free.l            ;  2
-   endr
-   jsr fullscr_st_223_1st_unmask.l      ;  1
-   jsr fullscr_st_223_unmask.l          ; 32
-   rts                                  ;256
-
 fn3_sh2_m1:
    jsr fullscr_st_fn3_init.l
    rept 32
@@ -312,6 +313,24 @@ fn3_sh2_b_m1:
    endr
    jsr fullscr_st_031_last_free.l       ;  1
    rts                                  ;256
+fn3_sh2_f_m1:
+   jsr fullscr_st_fn3_init.l
+   rept 32
+   jsr fullscr_st_031_bak.l             ; 32
+   endr
+   rept 5
+   jsr fullscr_st_031_free_32.l         ;160
+   endr
+   rept 27
+   jsr fullscr_st_031_free.l            ; 27
+   endr
+   jsr fullscr_st_031_lower_free.l      ;  2
+   jsr fullscr_st_031_free_32.l         ; 32
+   rept 2
+   jsr fullscr_st_031_free.l            ;  2
+   endr
+   jsr fullscr_st_031_last_free.l       ;  1
+   rts                                  ;256
 
 fn4_sh6_m1:
    move.l  #$00ff00ff,d0                ;  3 fullscr sh6 mask
@@ -341,24 +360,6 @@ fn4_sh6_c_m1:
    endr
    rept 7
    jsr fullscr_st_223_free.l            ;  7
-   endr
-   jsr fullscr_st_223_lower_free.l      ;  2
-   rept 2
-   jsr fullscr_st_223_free.l            ;  2
-   endr
-   jsr fullscr_st_223_1st_unmask.l      ;  1
-   jsr fullscr_st_223_unmask.l          ; 32
-   rts                                  ;256
-fn4_sh6_c2_m1:
-   move.l  #$00ff00ff,d0                ;  3 fullscr sh6 mask
-   jsr fullscr_st_fn4_init.l
-   jsr fullscr_st_223_msk_del.l         ; 51
-   jsr fullscr_st_223_cpy2_bdr.l        ; 37
-   rept 4
-   jsr fullscr_st_223_free_32.l         ;128
-   endr
-   rept 3
-   jsr fullscr_st_223_free.l            ;  3
    endr
    jsr fullscr_st_223_lower_free.l      ;  2
    rept 2
@@ -454,6 +455,24 @@ fn1_sh2_c_m2:
    endr
    jsr fullscr_st_143_last_free.l       ;  1
    rts
+
+fn1_sh2_c2_m2:
+   jsr fullscr_st_fn1_init.l
+   jsr fullscr_st_143_del_bak.l         ; 51
+   jsr fullscr_st_143_cpy2_bdr.l        ; 37
+   rept 4
+   jsr fullscr_st_143_free_32.l         ;128
+   endr
+   rept 3
+   jsr fullscr_st_143_free.l            ;  3
+   endr
+   jsr fullscr_st_143_lower_free.l      ;  2
+   jsr fullscr_st_143_free_32.l         ; 32
+   rept 2
+   jsr fullscr_st_143_free.l            ; 34
+   endr
+   jsr fullscr_st_143_last_free.l       ;  1
+   rts                                  ;256
 
 fn1_sh2_b_m2:
    jsr fullscr_st_fn1_init.l
@@ -605,24 +624,6 @@ fn2_sh6_b_m2:
    jsr fullscr_st_242_unmask.l          ; 32
    rts                                  ;256
 
-fn2_sh6_f_m2:
-   move.l    #$00ff00ff,d0              ;  3 fullscr sh6 mask
-   jsr fullscr_st_fn2_init.l
-   jsr fullscr_st_242_msk.l             ; 32
-   rept 5
-   jsr fullscr_st_242_free_32.l         ;160
-   endr
-   rept 27
-   jsr fullscr_st_242_free.l            ; 27
-   endr
-   jsr fullscr_st_242_lower_free.l      ;  2
-   rept 2
-   jsr fullscr_st_242_free.l            ;  2
-   endr
-   jsr fullscr_st_242_1st_unmask.l      ;  1
-   jsr fullscr_st_242_unmask.l          ; 32
-   rts                                  ;256
-
 fn3_sh2_m2:
    jsr fullscr_st_fn3_init.l
    rept 32
@@ -681,6 +682,25 @@ fn3_sh2_b_m2:
    jsr fullscr_st_143_last_free.l       ;  1
    rts                                  ;256
 
+fn3_sh2_f_m2:
+   jsr fullscr_st_fn3_init.l
+   rept 32
+   jsr fullscr_st_143_bak.l             ; 32
+   endr
+   rept 5
+   jsr fullscr_st_143_free_32.l         ;160
+   endr
+   rept 27
+   jsr fullscr_st_143_free.l            ; 27
+   endr
+   jsr fullscr_st_143_lower_free.l      ;  2
+   jsr fullscr_st_143_free_32.l         ; 32
+   rept 2
+   jsr fullscr_st_143_free.l            ;  2
+   endr
+   jsr fullscr_st_143_last_free.l       ;  1
+   rts                                  ;256
+
 fn4_sh6_m2:
    move.l  #$00ff00ff,d0                ;  3 fullscr sh6 mask
    jsr fullscr_st_fn4_init.l
@@ -717,25 +737,8 @@ fn4_sh6_c_m2:
    jsr fullscr_st_242_1st_unmask.l      ;  1
    jsr fullscr_st_242_unmask.l          ; 32
    rts                                  ;256
-fn4_sh6_c2_m2:
-   move.l  #$00ff00ff,d0                ;  3 fullscr sh6 mask
-   jsr fullscr_st_fn4_init.l
-   jsr fullscr_st_242_msk_del.l         ; 51
-   jsr fullscr_st_242_cpy2_bdr.l        ; 37
-   rept 4
-   jsr fullscr_st_242_free_32.l         ;128
-   endr
-   rept 3
-   jsr fullscr_st_242_free.l            ;  3
-   endr
-   jsr fullscr_st_242_lower_free.l      ;  2
-   rept 2
-   jsr fullscr_st_242_free.l            ;  2
-   endr
-   jsr fullscr_st_242_1st_unmask.l      ;  1
-   jsr fullscr_st_242_unmask.l          ; 32
-   rts                                  ;256
    endc   ;machine_t_2
+   endc   ;ifeq enable_tests
 
    ifne enable_tests
 tst_sh0_m1:
@@ -824,12 +827,13 @@ fn2_sh6_x_m1:
    jsr fullscr_st_223_unmask.l          ; 32
    rts                                  ;256
 
-   endc ;enable_tests
 
 fullscr_st_init_free:
     fullscr_waste_27n
     dcb.w   10,$4e71                    ;  40
     bra.w  fullscr_st_enable_colors
+
+    endc ;enable_tests
 
 fullscr_st_fn0_init:
     move.l    a4,a6                     ;  1

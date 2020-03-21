@@ -349,6 +349,14 @@ fullscr_st_copy_pic:
     move.l  d1,(a3)+
     dbra    d6,.xy
 
+    ;black out 1 line in scr picture to avoid flicker
+    lea  fullscr_st_picture+32,a0
+    moveq   #0,d1
+    move.w  #src_pic_w_b/4-1,d7
+.xy2:
+    move.l  d1,(a0)+
+    dbra    d7,.xy2
+
     ;now start copying plane picture
     move.l  screen_adr0,a3
     ifeq mem_512_k
@@ -508,13 +516,14 @@ bdr_src_off:  dc.l 0
 scr_nxt:  dc.l scr00l
 scr_cur:  dc.l scr00l
 
-
+  ifeq enable_tests
   ifne machine_t_1
 fn0_sh0:    dc.l fn0_sh0_m1
 fn0_sh0_c:  dc.l fn0_sh0_c_m1
 fn0_sh0_b:  dc.l fn0_sh0_b_m1
 fn1_sh2:    dc.l fn1_sh2_m1
 fn1_sh2_c:  dc.l fn1_sh2_c_m1
+fn1_sh2_c2: dc.l fn1_sh2_c2_m1
 fn1_sh2_b:  dc.l fn1_sh2_b_m1
 fn2_sh4:    dc.l fn2_sh4_m1
 fn2_sh4_c:  dc.l fn2_sh4_c_m1
@@ -523,13 +532,12 @@ fn2_sh4_b:  dc.l fn2_sh4_b_m1
 fn2_sh4_f:  dc.l fn2_sh4_f_m1
 fn2_sh6:    dc.l fn2_sh6_m1
 fn2_sh6_b:  dc.l fn2_sh6_b_m1
-fn2_sh6_f:  dc.l fn2_sh6_f_m1
 fn3_sh2:    dc.l fn3_sh2_m1
 fn3_sh2_c:  dc.l fn3_sh2_c_m1
 fn3_sh2_b:  dc.l fn3_sh2_b_m1
+fn3_sh2_f:  dc.l fn3_sh2_f_m1
 fn4_sh6:    dc.l fn4_sh6_m1
 fn4_sh6_c:  dc.l fn4_sh6_c_m1
-fn4_sh6_c2: dc.l fn4_sh6_c2_m1
   endc
 
   ifne machine_t_2
@@ -538,6 +546,7 @@ fn0_sh0_c:  dc.l fn0_sh0_c_m2
 fn0_sh0_b:  dc.l fn0_sh0_b_m2
 fn1_sh2:    dc.l fn1_sh2_m2
 fn1_sh2_c:  dc.l fn1_sh2_c_m2
+fn1_sh2_c2: dc.l fn1_sh2_c2_m2
 fn1_sh2_b:  dc.l fn1_sh2_b_m2
 fn2_sh4:    dc.l fn2_sh4_m2
 fn2_sh4_c:  dc.l fn2_sh4_c_m2
@@ -546,22 +555,45 @@ fn2_sh4_b:  dc.l fn2_sh4_b_m2
 fn2_sh4_f:  dc.l fn2_sh4_f_m2
 fn2_sh6:    dc.l fn2_sh6_m2
 fn2_sh6_b:  dc.l fn2_sh6_b_m2
-fn2_sh6_f:  dc.l fn2_sh6_f_m2
 fn3_sh2:    dc.l fn3_sh2_m2
 fn3_sh2_c:  dc.l fn3_sh2_c_m2
 fn3_sh2_b:  dc.l fn3_sh2_b_m2
+fn3_sh2_f:  dc.l fn3_sh2_f_m2
 fn4_sh6:    dc.l fn4_sh6_m2
 fn4_sh6_c:  dc.l fn4_sh6_c_m2
-fn4_sh6_c2: dc.l fn4_sh6_c2_m2
   endc
+  endc ;enable_tests
 
   ifne enable_tests
+  ifne machine_t_1
 tst_sh0:    dc.l tst_sh0_m1
 tst_sh2:    dc.l tst_sh2_m1
 tst_sh4:    dc.l tst_sh4_m1
 tst_sh6:    dc.l tst_sh6_m1
 fn2_sh6_x:  dc.l fn2_sh6_x_m1
 fn2_sh4_x:  dc.l fn2_sh4_x_m1
+
+fn0_sh0:    dc.l tst_sh0_m1
+fn0_sh0_c:  dc.l tst_sh0_m1
+fn0_sh0_b:  dc.l tst_sh0_m1
+fn1_sh2:    dc.l tst_sh2_m1
+fn1_sh2_c:  dc.l tst_sh2_m1
+fn1_sh2_c2: dc.l tst_sh2_m1
+fn1_sh2_b:  dc.l tst_sh2_m1
+fn2_sh4:    dc.l tst_sh4_m1
+fn2_sh4_c:  dc.l tst_sh4_m1
+fn2_sh4_c2: dc.l tst_sh4_m1
+fn2_sh4_b:  dc.l tst_sh4_m1
+fn2_sh4_f:  dc.l tst_sh4_m1
+fn2_sh6:    dc.l tst_sh6_m1
+fn2_sh6_b:  dc.l tst_sh6_m1
+fn3_sh2:    dc.l tst_sh2_m1
+fn3_sh2_c:  dc.l tst_sh2_m1
+fn3_sh2_b:  dc.l tst_sh2_m1
+fn3_sh2_f:  dc.l tst_sh2_m1
+fn4_sh6:    dc.l tst_sh6_m1
+fn4_sh6_c:  dc.l tst_sh6_m1
+  endc
   endc
 
 ;screen tables
@@ -594,41 +626,41 @@ scrl_lpx_table: ;tab 1: screen buffer table
                 ;tab 5: param1
                 ;tab 6: param2
 
-scr00l: dc.l scr_buf_sh0,fn0_sh0_c, 0,$000000,scr_buf_sh6,208                ; 0  + 0  - 0 =  0
-scr01l: dc.l scr_buf_sh3,fn1_sh2_c, 2,$000001,scr_buf_sh3,208                ; 0  + 4  - 3 =  1
-scr02l: dc.l scr_buf_sh6,fn2_sh4_c2,4,$000002,scr_buf_sh0,208                ; 0  + 8  - 6 =  2
-scr03l: dc.l scr_buf_sh9,fn2_sh6_b, 6,$000003,scr_buf_sh9,0                  ; 0  + 12 - 9 =  3
-scr04l: dc.l scr_buf_sh0,fn1_sh2_b, 2,$000004,scr_buf_sh6,0                  ; 0  + 4  - 0 =  4
-scr05l: dc.l scr_buf_sh3,fn2_sh4_b, 4,$000005,scr_buf_sh3,0                  ; 0  + 8  - 3 =  5
-scr06l: dc.l scr_buf_sh6,fn2_sh6_f, 6,$000006,scr_buf_dmy,0                  ; 0  + 12 - 6 =  6
-scr07l: dc.l scr_buf_sh9,fn0_sh0,   0,$000007,bdr_src_ds*000,bdr_dst_ds*000  ; 16 + 0  - 9 =  7
-scr08l: dc.l scr_buf_sh0,fn2_sh4,   4,$000008,bdr_src_ds*032,bdr_dst_ds*032  ; 0  + 8  - 0 =  8
-scr09l: dc.l scr_buf_sh3,fn2_sh6,   6,$000009,bdr_src_ds*064,bdr_dst_ds*064  ; 0  + 12 - 3 =  9
-scr10l: dc.l scr_buf_sh6,fn0_sh0,   0,$00000a,bdr_src_ds*096,bdr_dst_ds*096  ; 16 + 0  - 6 = 10
-scr11l: dc.l scr_buf_sh9,fn1_sh2,   2,$00000b,bdr_src_ds*128,bdr_dst_ds*128  ; 16 + 4  - 9 = 11
-scr12l: dc.l scr_buf_sh0,fn2_sh6,   6,$00000c,bdr_src_ds*160,bdr_dst_ds*160  ; 0  + 12 - 0 = 12
-scr13l: dc.l scr_buf_sh3,fn0_sh0,   0,$00000d,bdr_src_ds*192,bdr_dst_ds*192  ; 16 + 0  - 3 = 13
-scr14l: dc.l scr_buf_sh6,fn1_sh2,   2,$00000e,bdr_src_ds*224,bdr_dst_ds*224  ; 16 + 4  - 6 = 14
-scr15l: dc.l scr_buf_sh9,fn2_sh4_c, 4,$00000f,scr_buf_sh9,208                ; 16 + 8  - 9 = 15
+scr00l: dc.l scr_buf_sh0,fn0_sh0_c, 0,$000000,scr_buf_sh3,208                ; 0  + 0  - 0 =  0
+scr01l: dc.l scr_buf_sh3,fn1_sh2_c2,2,$000001,scr_buf_sh0,208                ; 0  + 4  - 3 =  1
+scr02l: dc.l scr_buf_sh6,fn2_sh4_b, 4,$000002,scr_buf_sh9,0                  ; 0  + 8  - 6 =  2
+scr03l: dc.l scr_buf_sh9,fn2_sh6_b, 6,$000003,scr_buf_sh6,0                  ; 0  + 12 - 9 =  3
+scr04l: dc.l scr_buf_sh0,fn1_sh2_b, 2,$000004,scr_buf_sh3,0                  ; 0  + 4  - 0 =  4
+scr05l: dc.l scr_buf_sh3,fn2_sh4_f, 4,$000005,scr_buf_dmy,0                  ; 0  + 8  - 3 =  5
+scr06l: dc.l scr_buf_sh6,fn2_sh6,   6,$000006,bdr_src_ds*000,bdr_dst_ds*000  ; 0  + 12 - 6 =  6
+scr07l: dc.l scr_buf_sh9,fn0_sh0,   0,$000007,bdr_src_ds*032,bdr_dst_ds*032  ; 16 + 0  - 9 =  7
+scr08l: dc.l scr_buf_sh0,fn2_sh4,   4,$000008,bdr_src_ds*064,bdr_dst_ds*064  ; 0  + 8  - 0 =  8
+scr09l: dc.l scr_buf_sh3,fn2_sh6,   6,$000009,bdr_src_ds*096,bdr_dst_ds*096  ; 0  + 12 - 3 =  9
+scr10l: dc.l scr_buf_sh6,fn0_sh0,   0,$00000a,bdr_src_ds*128,bdr_dst_ds*128  ; 16 + 0  - 6 = 10
+scr11l: dc.l scr_buf_sh9,fn1_sh2,   2,$00000b,bdr_src_ds*160,bdr_dst_ds*160  ; 16 + 4  - 9 = 11
+scr12l: dc.l scr_buf_sh0,fn2_sh6,   6,$00000c,bdr_src_ds*192,bdr_dst_ds*192  ; 0  + 12 - 0 = 12
+scr13l: dc.l scr_buf_sh3,fn0_sh0,   0,$00000d,bdr_src_ds*224,bdr_dst_ds*224  ; 16 + 0  - 3 = 13
+scr14l: dc.l scr_buf_sh6,fn1_sh2_c, 2,$00000e,scr_buf_sh9,208                ; 16 + 4  - 6 = 14
+scr15l: dc.l scr_buf_sh9,fn2_sh4_c, 4,$00000f,scr_buf_sh6,208                ; 16 + 8  - 9 = 15
 
 scrl_rpx_table:
 
-scr00r: dc.l scr_buf_sh0,fn0_sh0_b, 0,$010000,scr_buf_sh6,208                ; 0  + 0  - 0 =  0
-scr01r: dc.l scr_buf_sh3,fn3_sh2_b, 2,$010001,scr_buf_sh3,208                ; 0  + 4  - 3 =  1
-scr02r: dc.l scr_buf_sh6,fn2_sh4_f, 4,$010002,scr_buf_dmy,208                ; 0  + 8  - 6 =  2
-scr03r: dc.l scr_buf_sh9,fn4_sh6_c, 6,$010003,scr_buf_sh9,0                  ; 0  + 12 - 9 =  3
-scr04r: dc.l scr_buf_sh0,fn3_sh2_c, 2,$010004,scr_buf_sh6,0                  ; 0  + 4  - 0 =  4
-scr05r: dc.l scr_buf_sh3,fn2_sh4_c, 4,$010005,scr_buf_sh3,0                  ; 0  + 8  - 3 =  5
-scr06r: dc.l scr_buf_sh6,fn4_sh6_c2,6,$010006,scr_buf_sh0,0                  ; 0  + 12 - 6 =  6
-scr07r: dc.l scr_buf_sh9,fn0_sh0,   0,$010007,bdr_src_ds*000,bdr_dst_ds*000  ; 16 + 0  - 9 =  7
-scr08r: dc.l scr_buf_sh0,fn2_sh4,   4,$010008,bdr_src_ds*032,bdr_dst_ds*032  ; 0  + 8  - 0 =  8
-scr09r: dc.l scr_buf_sh3,fn4_sh6,   6,$010009,bdr_src_ds*064,bdr_dst_ds*064  ; 0  + 12 - 3 =  9
-scr10r: dc.l scr_buf_sh6,fn0_sh0,   0,$01000a,bdr_src_ds*096,bdr_dst_ds*096  ; 16 + 0  - 6 = 10
-scr11r: dc.l scr_buf_sh9,fn3_sh2,   2,$01000b,bdr_src_ds*128,bdr_dst_ds*128  ; 16 + 4  - 9 = 11
-scr12r: dc.l scr_buf_sh0,fn4_sh6,   6,$01000c,bdr_src_ds*160,bdr_dst_ds*160  ; 0  + 12 - 0 = 12
-scr13r: dc.l scr_buf_sh3,fn0_sh0,   0,$01000d,bdr_src_ds*192,bdr_dst_ds*192  ; 16 + 0  - 3 = 13
-scr14r: dc.l scr_buf_sh6,fn3_sh2,   2,$01000e,bdr_src_ds*224,bdr_dst_ds*224  ; 16 + 4  - 6 = 14
-scr15r: dc.l scr_buf_sh9,fn2_sh4_b, 4,$01000f,scr_buf_sh9,208                ; 16 + 8  - 9 = 15
+scr00r: dc.l scr_buf_sh0,fn0_sh0_b, 0,$010000,scr_buf_sh3,208                ; 0  + 0  - 0 =  0
+scr01r: dc.l scr_buf_sh3,fn3_sh2_f, 2,$010001,scr_buf_dmy,0                  ; 0  + 4  - 3 =  1
+scr02r: dc.l scr_buf_sh6,fn2_sh4_c, 4,$010002,scr_buf_sh9,0                  ;0  + 8  - 6 =  2
+scr03r: dc.l scr_buf_sh9,fn4_sh6_c, 6,$010003,scr_buf_sh6,0                  ; 0  + 12 - 9 =  3
+scr04r: dc.l scr_buf_sh0,fn3_sh2_c, 2,$010004,scr_buf_sh3,0                  ; 0  + 4  - 0 =  4
+scr05r: dc.l scr_buf_sh3,fn2_sh4_c2,4,$010005,scr_buf_sh0,0                  ; 0  + 8  - 3 =  5
+scr06r: dc.l scr_buf_sh6,fn4_sh6,   6,$010006,bdr_src_ds*000,bdr_dst_ds*000  ; 0  + 12 - 6 =  6
+scr07r: dc.l scr_buf_sh9,fn0_sh0,   0,$010007,bdr_src_ds*032,bdr_dst_ds*032  ; 16 + 0  - 9 =  7
+scr08r: dc.l scr_buf_sh0,fn2_sh4,   4,$010008,bdr_src_ds*064,bdr_dst_ds*064  ; 0  + 8  - 0 =  8
+scr09r: dc.l scr_buf_sh3,fn4_sh6,   6,$010009,bdr_src_ds*096,bdr_dst_ds*096  ; 0  + 12 - 3 =  9
+scr10r: dc.l scr_buf_sh6,fn0_sh0,   0,$01000a,bdr_src_ds*128,bdr_dst_ds*128  ; 16 + 0  - 6 = 10
+scr11r: dc.l scr_buf_sh9,fn3_sh2,   2,$01000b,bdr_src_ds*160,bdr_dst_ds*160  ; 16 + 4  - 9 = 11
+scr12r: dc.l scr_buf_sh0,fn4_sh6,   6,$01000c,bdr_src_ds*192,bdr_dst_ds*192  ; 0  + 12 - 0 = 12
+scr13r: dc.l scr_buf_sh3,fn0_sh0,   0,$01000d,bdr_src_ds*224,bdr_dst_ds*224  ; 16 + 0  - 3 = 13
+scr14r: dc.l scr_buf_sh6,fn3_sh2_b, 2,$01000e,scr_buf_sh9,208                ; 16 + 4  - 6 = 14
+scr15r: dc.l scr_buf_sh9,fn2_sh4_b, 4,$01000f,scr_buf_sh6,208                ; 16 + 8  - 9 = 15
 
 
 bdr_src_lft1:   dc.l 0

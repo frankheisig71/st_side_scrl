@@ -84,22 +84,6 @@ fullscr_st_223_cpy_bdr_loop:
     fullscr_cpy                      ; 84 nops to right bdr
     rts
 
-fullscr_st_223_cpy2_bdr: ;this is needed only if bdr_src_offs > 0
-    fullscr_st_223_start
-    dcb.w     86-83,$4e71            ; 86 / NOPs
-    fullscr_cpy2_bdr_init            ; 83 Nops to right border, 10 after stabelizer
-fullscr_st_223_cpy2_bdr_loop:
-    dcb.w     1,$4e71                ;  5 left from macro (dbra)
-    fullscr_st_223_start
-    dcb.w     86-84,$4e71            ; 86 / NOPs
-    fullscr_cpy2                     ; 84 nops to right bdr
-    dcb.w     5,$4e71                ;  1 / NOP
-    dbra d4,fullscr_st_223_cpy2_bdr_loop  ; 3 / 4
-    fullscr_st_223_start
-    dcb.w     86-84,$4e71            ; 86 / NOPs
-    fullscr_cpy2                     ; 84 nops to right bdr
-    rts
-
 fullscr_st_223_bak_bdr:
     fullscr_st_223_start
     dcb.w     86-85,$4e71            ; 86 / NOPs
@@ -300,22 +284,6 @@ fullscr_st_242_cpy_bdr_loop:
     fullscr_st_242_start
     dcb.w     85-84,$4e71            ; 85 / NOPs
     fullscr_cpy                      ; 84 nops to right bdr
-    rts
-
-fullscr_st_242_cpy2_bdr: ;this is needed only if bdr_src_offs > 0
-    fullscr_st_242_start
-    dcb.w     85-83,$4e71            ; 85 / NOPs
-    fullscr_cpy2_bdr_init            ; 83 Nops to right border, 10 after stabelizer
-fullscr_st_242_cpy2_bdr_loop:
-    dcb.w     1,$4e71                ;  5 left from macro (dbra)
-    fullscr_st_242_start
-    dcb.w     85-84,$4e71            ; 85 / NOPs
-    fullscr_cpy2                     ; 84 nops to right bdr
-    dcb.w     5,$4e71                ;  1 / NOP
-    dbra d4,fullscr_st_242_cpy2_bdr_loop  ; 3 / 4
-    fullscr_st_242_start
-    dcb.w     85-84,$4e71            ; 85 / NOPs
-    fullscr_cpy2                     ; 84 nops to right bdr
     rts
 
 fullscr_st_242_bak_bdr:

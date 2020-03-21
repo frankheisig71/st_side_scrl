@@ -6,7 +6,6 @@
 ; main.s
 
 show_infos:  	equ	1				;1=Show startup infos 0=Show nothing at startup
-enable_tests:	equ	0
 screensize:	  equ	58880 ;59800		;Size of one screen buffer
                           ;294 kB!!
 screenspace:	equ	0 ;460	  	;2 scan lines space
@@ -22,6 +21,7 @@ machine_t_1:  equ 1
 machine_t_2:  equ 0
 mem_512_k:    equ 0 ;only for tests, 1 screenbuffer less, means no right
                     ;scrolling and only 8 screen rolls to left
+enable_tests:	equ	0
 
 
 		section	text

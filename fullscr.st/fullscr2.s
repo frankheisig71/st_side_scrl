@@ -64,6 +64,22 @@ fullscr_st_031_cpy_bdr_loop:
     fullscr_cpy                      ; 84 nops to right bdr
     rts
 
+fullscr_st_031_cpy2_bdr: ;this is needed only if bdr_src_offs > 0
+    fullscr_st_031_start
+    dcb.w     88-83,$4e71            ; 88 / NOPs
+    fullscr_cpy2_bdr_init            ; 83 Nops to right border, 10 after stabelizer
+fullscr_st_031_cpy2_bdr_loop:
+    dcb.w     1,$4e71                ;  5 left from macro (dbra)
+    fullscr_st_031_start
+    dcb.w     88-84,$4e71            ; 88 / NOPs
+    fullscr_cpy2                     ; 84 nops to right bdr
+    dcb.w     5,$4e71                ;  1 / NOP
+    dbra d4,fullscr_st_031_cpy2_bdr_loop  ; 3 / 4
+    fullscr_st_031_start
+    dcb.w     88-84,$4e71            ; 88 / NOPs
+    fullscr_cpy2                     ; 84 nops to right bdr
+    rts
+
 fullscr_st_031_bak_bdr:
     fullscr_st_031_start
     dcb.w     88-85,$4e71            ; 88 / NOPs
@@ -153,7 +169,7 @@ fullscr_st_031_last_free:            ;  0xNop 3xHi 1xMed
     move.l    d0,(a3)+               ; 24 black pal
     endr
     rts                              ;  4 rts (4)
-                                          
+
     endc
 
 
@@ -220,6 +236,22 @@ fullscr_st_143_cpy_bdr_loop:
     fullscr_st_143_start
     dcb.w     85-84,$4e71            ; 85 / NOPs
     fullscr_cpy                      ; 84 nops to right bdr
+    rts
+
+fullscr_st_143_cpy2_bdr: ;this is needed only if bdr_src_offs > 0
+    fullscr_st_143_start
+    dcb.w     85-83,$4e71            ; 85 / NOPs
+    fullscr_cpy2_bdr_init            ; 83 Nops to right border, 10 after stabelizer
+fullscr_st_143_cpy2_bdr_loop:
+    dcb.w     1,$4e71                ;  5 left from macro (dbra)
+    fullscr_st_143_start
+    dcb.w     85-84,$4e71            ; 85 / NOPs
+    fullscr_cpy2                     ; 84 nops to right bdr
+    dcb.w     5,$4e71                ;  1 / NOP
+    dbra d4,fullscr_st_143_cpy2_bdr_loop  ; 3 / 4
+    fullscr_st_143_start
+    dcb.w     85-84,$4e71            ; 85 / NOPs
+    fullscr_cpy2                     ; 84 nops to right bdr
     rts
 
 fullscr_st_143_bak_bdr:
@@ -296,7 +328,7 @@ fullscr_st_143_lower_free:
     dcb.w     1,$4e71                ;  1
     move.w    d7,(a0)                ;  2 / low rez
     fullscr_waste_85n
-    ;dcb.w     85,$4e71               ; 85 / NOPs
+    ;dcb.w    85-85,$4e71            ; 85 / NOPs
     fullscr_right_bdr
     fullscr_waste_13n                ; 13
     fullscr_stabilizer
@@ -306,7 +338,7 @@ fullscr_st_143_lower_free:
 fullscr_st_143_last_free:            ;
     fullscr_st_143_start
     fullscr_waste_85n
-    dcb.w    88-85,$4e71             ; 88 / NOPs
+    ;dcb.w    85-85,$4e71            ; 85 / NOPs
     fullscr_right_bdr
     lea  $ffff8240.w,a3              ;  2 / 24 black pal
     moveq      #0,d0                 ;  1

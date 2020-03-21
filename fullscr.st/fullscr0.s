@@ -16,6 +16,7 @@ fullscr_st_224_start: macro          ;  2xNop 2xHi 4xMed
     move.w    d7,(a0)                ;  2 / low rez
     endm
 
+    ifeq enable_tests
 fullscr_st_224_msk_del:
     fullscr_st_224_start
     ;dcb.w     85-85,$4e71           ; 85 / NOPs
@@ -85,16 +86,6 @@ fullscr_st_224_bak_bdr_loop:
     fullscr_bak                      ; 84 nops to right bdr
     rts
 
-fullscr_st_224_free:
-    fullscr_st_224_start
-    fullscr_waste_85n
-    fullscr_right_bdr
-    fullscr_waste_13n                ; 13 / NOPs
-    fullscr_stabilizer
-    dcb.w     2,$4e71                ;  2 / NOP
-    rts                              ;  9 / jsr (5) + rts (4)
-                                     ;  95 + 4 + 18 + 11 =128
-
 fullscr_st_224_free_128:
     fullscr_st_224_start
     fullscr_waste_85n
@@ -115,30 +106,6 @@ fullscr_st_224_free_128:
     fullscr_stabilizer
     dcb.w     2,$4e71                ;  2 / NOP
     rts                              ;  9 / jsr (5) + rts (4)
-                                     ;  95 + 4 + 18 + 11 =128
-fullscr_st_224_lower_free:
-    fullscr_st_224_start
-    fullscr_waste_85n
-    ;dcb.w     85-85,$4e71           ; 85 / NOPs
-    fullscr_right_bdr
-    fullscr_waste_13n                ; 13
-    fullscr_stabilizer
-    dcb.w  7,$4e71                   ;  7
-    move.w  d7,(a1)                  ;  2 lower border
-    dcb.w  2,$4e71                   ;  2
-    ;-------------------------------------------
-    dcb.w     2,$4e71                ;  2
-    move.b    d7,(a0)                ;  2 / Left border hi rez
-    move.b    d6,(a0)                ;  2 / med rez
-    move.b    d7,(a1)                ;  2 / 50 Hz from low border switch
-    move.w    d7,(a0)                ;  2 / low rez
-    fullscr_waste_85n
-    ;dcb.w     85-85,$4e71           ; 85 / NOPs
-    fullscr_right_bdr
-    fullscr_waste_13n                ; 13
-    fullscr_stabilizer
-    dcb.w     2,$4e71                ;  2 / NOPs
-    rts                              ;  9 / jsr xxx.l (5) + rts (4)
 
 fullscr_st_224_1st_unmask:           ;  2xNop 2xHi 4xMed
     fullscr_st_224_start
@@ -171,6 +138,40 @@ fullscr_st_224_unmask_loop:
     fullscr_cpy                      ; 84 nops to rihgt bdr
     fullscr_blackpal
     rts
+    endc ;ifeq enable_tests
+
+fullscr_st_224_lower_free:
+    fullscr_st_224_start
+    fullscr_waste_85n
+    ;dcb.w     85-85,$4e71           ; 85 / NOPs
+    fullscr_right_bdr
+    fullscr_waste_13n                ; 13
+    fullscr_stabilizer
+    dcb.w  7,$4e71                   ;  7
+    move.w  d7,(a1)                  ;  2 lower border
+    dcb.w  2,$4e71                   ;  2
+    ;-------------------------------------------
+    dcb.w     2,$4e71                ;  2
+    move.b    d7,(a0)                ;  2 / Left border hi rez
+    move.b    d6,(a0)                ;  2 / med rez
+    move.b    d7,(a1)                ;  2 / 50 Hz from low border switch
+    move.w    d7,(a0)                ;  2 / low rez
+    fullscr_waste_85n
+    ;dcb.w     85-85,$4e71           ; 85 / NOPs
+    fullscr_right_bdr
+    fullscr_waste_13n                ; 13
+    fullscr_stabilizer
+    dcb.w     2,$4e71                ;  2 / NOPs
+    rts                              ;  9 / jsr xxx.l (5) + rts (4)
+
+fullscr_st_224_free:
+    fullscr_st_224_start
+    fullscr_waste_85n
+    fullscr_right_bdr
+    fullscr_waste_13n                ; 13 / NOPs
+    fullscr_stabilizer
+    dcb.w     2,$4e71                ;  2 / NOP
+    rts                              ;  9 / jsr (5) + rts (4)
 
     ifne enable_tests
 
