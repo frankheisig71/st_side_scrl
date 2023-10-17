@@ -103,12 +103,12 @@ fullscr_cpy:	macro
     dcb.w     2,$4e71                ;  2 / NOP
     endm
 
-fullscr_cpy2:	macro ;this is needed only if bdr_src_offs > 0
+fullscr_cpy2:	macro ;this is needed only if bdr_src_offs > 0 (copy from a static picture)
     ;restore 16px column from buffer
     ;(a5) -> src (no line wrap)
     ;(a4) -> dst (screen buffer 230 bytes per line)
     ; d2  -> #222
-    ; 8x per call
+    ; 7x per call
 
     rept 6
     move.l    (a5)+,(a4)+            ;  5
